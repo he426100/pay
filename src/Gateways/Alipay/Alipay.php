@@ -129,13 +129,30 @@ abstract class Alipay implements GatewayInterface
      *
      * @return array|bool
      */
-    public function find($out_trade_no = '')
+    public function find($out_trade_no = '', $trade_no = '')
     {
         $config_biz = [
             'out_trade_no' => $out_trade_no,
+            'trade_no' => $trade_no
         ];
 
         return $this->getResult($config_biz, 'alipay.trade.query');
+    }
+
+    /**
+     * 查询对账单下载地址
+     * @param  String $bill_date 账单时间：日账单格式为yyyy-MM-dd，月账单格式为yyyy-MM。
+     * @param  String $bill_type trade指商户基于支付宝交易收单的业务账单；signcustomer是指基于商户支付宝余额收入及支出等资金变动的帐务账单
+     * @return array|bool
+     */
+    public function bill($bill_date, $bill_type = 'trade')
+    {
+        $config_biz = [
+            'bill_type' => $bill_type,
+            'bill_date' => $bill_date
+        ];
+
+        return $this->getResult($config_biz, 'alipay.data.dataservice.bill.downloadurl.query');
     }
 
     /**
@@ -228,7 +245,8 @@ abstract class Alipay implements GatewayInterface
             throw new GatewayException(
                 'get result error:'.$data[$method]['msg'].' - '.$data[$method]['sub_code'],
                 $data[$method]['code'],
-                $data);
+                $data
+            );
         }
 
         return $this->verify($data[$method], $data['sign'], true);

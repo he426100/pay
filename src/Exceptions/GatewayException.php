@@ -25,4 +25,15 @@ class GatewayException extends Exception
 
         $this->raw = $raw;
     }
+
+    /**
+     * 返回友好的支付宝数据
+     * @param  string $method
+     * @return array
+     */
+    public function getRaw($method)
+    {
+        $method = str_replace('.', '_', $method).'_response';
+        return isset($this->raw[$method]) ? $this->raw[$method] : [];
+    }
 }
